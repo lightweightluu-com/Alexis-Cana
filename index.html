@@ -1,24 +1,46 @@
 <!doctype html>
-<html lang="de">
+<html lang="de-CH">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#14532d" />
-    <meta name="description" content="Eine PWA auf lightweightluu.com" />
+    <meta name="theme-color" content="#8f1d2e" />
+    <meta
+      name="description"
+      content="Alexi's Restaurant & Winebar und Cana Cocktailbar & Fumoir mitten im Zürcher Niederdorf. Mittagsmenü, Spezialitäten, Weine, A Gin, Cocktails und Zigarren."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="de_CH" />
+    <meta property="og:title" content="Alexis Restaurant & Winebar – Cana Cocktailbar & Fumoir" />
+    <meta property="og:description" content="Mitten im Herzen von Zürich: Niederdorfstrasse 40." />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <title>Neue App</title>
+    <link rel="preload" as="image" href="/images/hero-niederdorf.jpg" fetchpriority="high" />
+    <title>Alexis Restaurant & Winebar – Cana Cocktailbar & Fumoir | Zürich</title>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Restaurant",
+        "name": "Alexis Restaurant & Winebar – Cana Cocktailbar & Fumoir",
+        "telephone": "+41442523788",
+        "email": "zuerich@alexis-cana.ch",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Niederdorfstrasse 40",
+          "postalCode": "8001",
+          "addressLocality": "Zürich",
+          "addressCountry": "CH"
+        },
+        "geo": { "@type": "GeoCoordinates", "latitude": 47.3745, "longitude": 8.5439 },
+        "openingHoursSpecification": [
+          { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday"], "opens": "11:00", "closes": "24:00" },
+          { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Friday", "Saturday"], "opens": "11:00", "closes": "02:00" },
+          { "@type": "OpeningHoursSpecification", "dayOfWeek": "Sunday", "opens": "16:00", "closes": "22:00" }
+        ]
+      }
+    </script>
   </head>
   <body>
-    <main class="shell">
-      <p class="eyebrow">lightweightluu.com</p>
-      <h1>Bereit zum Bauen.</h1>
-      <p class="lead">
-        Dieses Repo wurde aus <code>pwa-template</code> erstellt. Jeder Push auf
-        <code>main</code> geht automatisch live.
-      </p>
-      <p class="status" id="status">Prüfe Offline-Fähigkeit …</p>
-    </main>
-    <script type="module" src="/src/main.js"></script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
