@@ -1,6 +1,10 @@
-import { Clock, Flame } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Clock, Download, Flame } from 'lucide-react';
 import PageHero, { Section } from '@/components/sections/PageHero';
 import MenuViewer from '@/components/sections/MenuViewer';
+import DigitalMenu from '@/components/sections/DigitalMenu';
+import { Button } from '@/components/ui/button';
+import { api } from '@/lib/api';
 import { SITE } from '@/lib/site';
 
 const PAGES = {
@@ -40,10 +44,24 @@ const PAGES = {
 
 export default function MenuPage({ kind }) {
   const p = PAGES[kind];
+  const [digital, setDigital] = useState(null);
+
+  // Digitale Karte aus dem Admin-Bereich. Fehlt sie oder ist das Backend nicht erreichbar, bleibt es beim PDF.
+  useEffect(() => {
+    let alive = true;
+    setDigital(null);
+    api(`/api/menus/${kind}`)
+      .then((d) => alive && d.meta.digital && d.sections.length && setDigital(d))
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, [kind]);
+
   return (
     <>
       <PageHero eyebrow={p.eyebrow} title={p.title}>
-        <p>{p.intro}</p>
+        <p>{digital?.meta.validText ? `Aktuell: ${digital.meta.validText}. ` : ''}{digital ? digital.meta.note || p.intro : p.intro}</p>
         {p.notes.length > 0 && (
           <ul className="mt-5 space-y-2 text-sm text-white/65">
             {p.notes.map(([Icon, text]) => (
@@ -55,7 +73,20 @@ export default function MenuPage({ kind }) {
         )}
       </PageHero>
       <Section>
-        <MenuViewer image={p.image} pdf={p.pdf} alt={p.alt} wide={p.wide} />
+        {digital ? (
+          <>
+            <DigitalMenu sections={digital.sections} showAllergens={kind === 'tagesmenu' || kind === 'speisekarte'} />
+            <div className="mt-12 flex justify-center">
+              <Button asChild variant="outline">
+                <a href={p.pdf} download>
+                  <Download /> Karte als PDF
+                </a>
+              </Button>
+            </div>
+          </>
+        ) : (
+          <MenuViewer image={p.image} pdf={p.pdf} alt={p.alt} wide={p.wide} />
+        )}
       </Section>
     </>
   );

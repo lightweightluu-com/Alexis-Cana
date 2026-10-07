@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
 import Home from '@/pages/Home';
@@ -14,9 +15,13 @@ import View360 from '@/pages/View360';
 import Shop from '@/pages/Shop';
 import NotFound from '@/pages/NotFound';
 
+// Admin-Bereich wird nur bei Bedarf geladen und ist nicht Teil des öffentlichen Bundles.
+const AdminApp = lazy(() => import('@/pages/admin/AdminApp'));
+
 export default function App() {
   return (
     <Routes>
+      <Route path="admin/*" element={<Suspense fallback={null}><AdminApp /></Suspense>} />
       <Route element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="tagesmenu" element={<MenuPage kind="tagesmenu" />} />

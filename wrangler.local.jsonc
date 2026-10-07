@@ -1,0 +1,17 @@
+{
+  // Nur für die lokale Entwicklung (npm run dev:worker). Das Deployment erzeugt
+  // seine eigene Konfiguration im CI, siehe scripts/wrangler-config.mjs.
+  "name": "alexis-cana-local",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [
+    { "binding": "DB", "database_name": "alexis-cana-db", "database_id": "00000000-0000-0000-0000-000000000000", "migrations_dir": "migrations" }
+  ],
+  "r2_buckets": [{ "binding": "FILES", "bucket_name": "alexis-cana-files" }]
+}

@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "dev:worker": "wrangler dev -c wrangler.local.jsonc",
+    "db:local": "wrangler d1 migrations apply DB --local -c wrangler.local.jsonc"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",

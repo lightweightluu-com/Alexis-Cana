@@ -8,15 +8,23 @@ Jeder Push auf `main` wird automatisch als PWA auf
 - `.github/workflows/deploy.yml` baut mit `npm run build` und deployt `dist/`
   als Cloudflare Worker (Static Assets) mit Custom Domain.
 - Die Subdomain ist der Repo-Name in Kleinbuchstaben (`_` und `.` werden zu `-`).
-- `wrangler.jsonc` wird im CI erzeugt und ist in `.gitignore` – nicht einchecken.
+- `wrangler.jsonc` wird im CI erzeugt (`scripts/wrangler-config.mjs`) und ist in `.gitignore` – nicht einchecken.
+  Für lokale Entwicklung gibt es `wrangler.local.jsonc` (ohne Secrets).
 - Secrets (`CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`) kommen aus der Org.
   Niemals Tokens oder Keys in den Code schreiben.
 
 ## Stack
 - Vite + `vite-plugin-pwa` (Manifest + Service Worker, `autoUpdate`).
 - Build-Output muss in `dist/` landen.
-- Kein Backend: alles läuft statisch. Wird ein Backend nötig, zuerst fragen
-  (Optionen: Worker-Code im selben Projekt, Supabase).
+- Backend im selben Worker (`worker/index.js`, nur `/api/*` läuft über den Worker):
+  D1-Datenbank `<repo>-db` (Anfragen, Karten, Migrationen in `migrations/`) und
+  R2-Speicher `<repo>-files` (Bewerbungsunterlagen). `scripts/wrangler-config.mjs`
+  legt beides im CI an und lässt die Bindung weg, falls das nicht klappt (die Seite
+  deployt dann trotzdem). Neue Tabellen immer als neue Migrationsdatei, nie `0001` ändern.
+- Admin-Bereich unter `/admin` (Passwort = GitHub-Secret `ADMIN_PASSWORD`, wird im CI als
+  Worker-Secret gesetzt). Lokal testen: `.dev.vars` mit `ADMIN_PASSWORD=…` anlegen,
+  `npm run build && npm run db:local && npm run dev:worker`.
+- Weitere Backend-Dienste (z. B. Supabase) vorher mit dem Besitzer klären.
 - SPA-Routing ist aktiv (`not_found_handling: single-page-application`).
 - Frameworks (React, Svelte, …) sind erlaubt, wenn das Projekt es braucht –
   `vite-plugin-pwa` und den `dist/`-Output beibehalten.
