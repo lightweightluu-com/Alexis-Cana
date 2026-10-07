@@ -35,7 +35,12 @@ const wrangler = (args) =>
   execFileSync('npx', ['--no-install', 'wrangler', ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, CI: '1', WRANGLER_SEND_METRICS: 'false' } });
 const json = (out) => JSON.parse(out.slice(out.search(/[[{]/)));
 const strip = (t) => t.replace(/\u001b\[[0-9;]*m/g, '');
-const reason = (e) => strip(String(e.stderr || e.message || e)).split('\n').find((l) => /error|fehl|permission|authentication/i.test(l))?.trim() || 'unbekannter Fehler';
+// Fehlertext ohne Farbcodes. Nimmt die Zeilen mit Fehler- oder Codehinweis, damit die Ursache sichtbar wird.
+const reason = (e) => {
+  const lines = strip(String(e.stderr || e.message || e)).split('\n').map((l) => l.trim());
+  const picked = lines.filter((l) => /error|code:|authentication|permission|not authorized|forbidden/i.test(l));
+  return (picked.length ? picked : lines.filter(Boolean)).slice(0, 3).join(' | ') || 'unbekannter Fehler';
+};
 
 const status = [];
 save();
