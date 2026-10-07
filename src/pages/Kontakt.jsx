@@ -3,7 +3,7 @@ import { Clock, Glasses, Mail, MapPin, Phone, Printer } from 'lucide-react';
 import PageHero, { Section } from '@/components/sections/PageHero';
 import Reveal from '@/components/effects/Reveal';
 import { Button } from '@/components/ui/button';
-import MailForm from '@/components/sections/MailForm';
+import InquiryForm from '@/components/sections/InquiryForm';
 import { HOURS_DISPLAY, SITE } from '@/lib/site';
 
 const FIELDS = [
@@ -55,7 +55,7 @@ export default function Kontakt() {
             <div className="rounded-3xl border border-border bg-card p-6 shadow-xl sm:p-8">
               <h2 className="text-3xl text-primary">Kontakt-Formular</h2>
               <div className="mt-6">
-                <MailForm fields={FIELDS} subject="Anfrage über die Website" />
+                <InquiryForm type="contact" fields={FIELDS} subject="Anfrage über die Website" />
               </div>
             </div>
           </Reveal>

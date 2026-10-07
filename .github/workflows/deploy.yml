@@ -43,21 +43,11 @@ jobs:
           echo "name=$NAME" >> "$GITHUB_OUTPUT"
           echo "Deploy-Ziel: https://$NAME.lightweightluu.com"
 
-      - name: Wrangler-Config erzeugen
-        run: |
-          cat > wrangler.jsonc <<EOF
-          {
-            "name": "${{ steps.name.outputs.name }}",
-            "compatibility_date": "2026-09-01",
-            "assets": {
-              "directory": "./dist",
-              "not_found_handling": "single-page-application"
-            },
-            "routes": [
-              { "pattern": "${{ steps.name.outputs.name }}.lightweightluu.com", "custom_domain": true }
-            ]
-          }
-          EOF
+      - name: Wrangler-Config erzeugen (inkl. Datenbank und Dateispeicher)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node scripts/wrangler-config.mjs "${{ steps.name.outputs.name }}"
 
       - name: Deploy zu Cloudflare
         uses: cloudflare/wrangler-action@v3
@@ -65,6 +55,19 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy
+
+      - name: Admin-Passwort setzen
+        continue-on-error: true
+        env:
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -z "$ADMIN_PASSWORD" ]; then
+            echo "::warning::Secret ADMIN_PASSWORD fehlt: Der Admin-Login bleibt deaktiviert."
+            exit 0
+          fi
+          printf '%s' "$ADMIN_PASSWORD" | npx wrangler secret put ADMIN_PASSWORD
 
       - name: Zusammenfassung
         run: |

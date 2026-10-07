@@ -2,7 +2,7 @@ import { Banknote, ChefHat, CircleCheck, Eye, GlassWater, KeyRound, Smile, Star,
 import PageHero, { Section } from '@/components/sections/PageHero';
 import Reveal from '@/components/effects/Reveal';
 import { Accordion } from '@/components/ui/accordion';
-import MailForm from '@/components/sections/MailForm';
+import InquiryForm from '@/components/sections/InquiryForm';
 
 const TASKS = [
   [ChefHat, 'Erstellen der Mise en place'],
@@ -50,7 +50,8 @@ const FIELDS = [
   { name: 'betreff', label: 'Betreff', full: true },
   { name: 'email', label: 'Ihre E-Mail-Adresse', type: 'email', required: true, autoComplete: 'email' },
   { name: 'telefon', label: 'Telefon', type: 'tel', required: true, autoComplete: 'tel' },
-  { name: 'nachricht', label: 'Ihre Nachricht', type: 'textarea' }
+  { name: 'nachricht', label: 'Ihre Nachricht', type: 'textarea' },
+  { name: 'file', label: 'Ihre Unterlagen', type: 'file' }
 ];
 
 function List({ title, children }) {
@@ -103,9 +104,9 @@ export default function Jobs() {
           <Reveal className="self-start lg:sticky lg:top-28">
             <div className="rounded-3xl border border-border bg-card p-6 shadow-xl sm:p-8">
               <h2 className="text-3xl text-primary">Online bewerben</h2>
-              <p className="mt-2 text-sm text-muted-foreground">Interesse? Dann füllen Sie bitte das Formular aus und bewerben sich online. Ihre Unterlagen (Lebenslauf, Zeugnisse) senden Sie bitte als Anhang an die vorbereitete E-Mail.</p>
+              <p className="mt-2 text-sm text-muted-foreground">Interesse? Dann füllen Sie bitte das Formular aus und bewerben sich online. Ihre Unterlagen (Lebenslauf, Zeugnisse) können Sie direkt anhängen.</p>
               <div className="mt-6">
-                <MailForm fields={FIELDS} subject="Bewerbung Bar-/Serviceaushilfe" submitLabel="Bewerbung senden" />
+                <InquiryForm type="job" fields={FIELDS} subject="Bewerbung Bar-/Serviceaushilfe" submitLabel="Bewerbung senden" />
               </div>
               <div className="mt-8 border-t border-border pt-6 text-sm text-muted-foreground">
                 <p>Oder schicken Sie uns Ihre Unterlagen an:</p>
